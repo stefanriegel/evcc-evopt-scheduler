@@ -9,7 +9,7 @@ exposed through a lightweight REST API.
 The repository follows the standard Home Assistant add-on layout:
 
 ```
-evcc-evopt-scheduler/
+evcc_evopt_scheduler/
 ├── app/                 # Python sources
 ├── config.yaml          # Add-on metadata and option schema
 ├── Dockerfile           # Container build recipe
@@ -29,5 +29,5 @@ evcc-evopt-scheduler/
 - **REST API**: Serves status, metrics, and the last optimization
   request/response over a configurable HTTP port (default `7060`).
 
-Refer to `evcc-evopt-scheduler/README.md` for installation instructions,
+Refer to `evcc_evopt_scheduler/README.md` for installation instructions,
 configuration details, and the API surface provided by the add-on.
