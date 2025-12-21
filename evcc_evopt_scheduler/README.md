@@ -82,7 +82,7 @@ Available strategies:
 | `/api/optimization/response` | GET | Most recent EVOpt response |
 | `/api/optimization/run` | POST | Trigger an on-demand optimization |
 
-All endpoints return JSON. The service listens on port `8000` inside the add-on
+All endpoints return JSON. The service listens on port `7060` inside the add-on
 container. Home Assistant can reach it through the supervisor proxy using
 `http://[HOST]:[PORT]` once you expose the add-on locally (e.g. via Ingress proxy
 or a command-line sensor).
