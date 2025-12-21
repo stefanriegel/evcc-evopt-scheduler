@@ -28,6 +28,8 @@ EVOpt run as Home Assistant add-ons using their standard internal hostnames.
 | `optimization_horizon_hours` | Optimization horizon | `48` |
 | `evcc_poll_interval_seconds` | How often to refresh EVCC state | `15` |
 | `scheduler_interval_seconds` | How often to run EVOpt | `900` |
+| `grid_power_limit_w` | Grid import/export limit in watts | `11000` |
+| `api_port` | Port exposing the add-on REST API | `7060` |
 | `log_level` | Log verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`) | `INFO` |
 | `battery.*` | Battery constraint settings passed to EVOpt | see config |
 

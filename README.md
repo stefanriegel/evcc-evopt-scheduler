@@ -15,7 +15,8 @@ evcc-evopt-scheduler/
 ├── Dockerfile           # Container build recipe
 ├── README.md            # Add-on specific documentation
 ├── requirements.txt     # Python dependencies
-└── run.sh               # Container entrypoint script
+├── rootfs/              # s6-overlay service and init scripts
+└── build.yaml           # Architecture build targets
 ```
 
 ## Add-on Overview
@@ -26,8 +27,7 @@ evcc-evopt-scheduler/
 - **EVOpt Execution**: Builds an `OptimizationInput` payload using configurable
   battery constraints and runs the EVOpt REST endpoint on a fixed cadence.
 - **REST API**: Serves status, metrics, and the last optimization
-  request/response for easy integration with Home Assistant sensors or external
-  dashboards.
+  request/response over a configurable HTTP port (default `7060`).
 
 Refer to `evcc-evopt-scheduler/README.md` for installation instructions,
 configuration details, and the API surface provided by the add-on.

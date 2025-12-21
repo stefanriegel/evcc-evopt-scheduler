@@ -23,3 +23,4 @@
 18. Prefer type hints and `# type: ignore` comments when stubs are unavailable.
 19. Tests (if added) belong under `evcc-evopt-scheduler/tests` using pytest.
 20. Log levels should be configurable via the add-on options; default to `INFO`.
+21. The REST API port is configurable (`api_port` in `config.yaml`); keep documentation in sync with defaults.

@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover
 CONFIG_PATH = Path("/data/options.json")
 SHARE_DIR = Path("/share/evcc-evopt-scheduler")
 DEFAULT_TIME_ZONE = "Europe/Berlin"
-APP_PORT = 8000
+DEFAULT_API_PORT = 7060
 
 
 @dataclass
@@ -60,6 +60,7 @@ class AppConfig:
     evcc_poll_interval_seconds: int
     scheduler_interval_seconds: int
     grid_power_limit_w: float
+    api_port: int
     log_level: str
     battery: BatteryConfig
 
@@ -89,6 +90,7 @@ class AppConfig:
             evcc_poll_interval_seconds=int(raw.get("evcc_poll_interval_seconds", 15)),
             scheduler_interval_seconds=int(raw.get("scheduler_interval_seconds", 900)),
             grid_power_limit_w=float(raw.get("grid_power_limit_w", 11000)),
+            api_port=int(raw.get("api_port", DEFAULT_API_PORT)),
             log_level=raw.get("log_level", "INFO").upper(),
             battery=battery,
         )
@@ -320,9 +322,10 @@ class PayloadBuilder:
 class RestServer:
     """REST server exposing scheduler state."""
 
-    def __init__(self, app_state: "SchedulerState", logger: logging.Logger) -> None:
+    def __init__(self, app_state: "SchedulerState", logger: logging.Logger, api_port: int) -> None:
         self._app_state = app_state
         self._log = logger.getChild("api")
+        self._api_port = api_port
         self._runner: Optional[web.AppRunner] = None
         self._site: Optional[web.TCPSite] = None
 
@@ -339,11 +342,11 @@ class RestServer:
         )
         runner = web.AppRunner(app)
         await runner.setup()
-        site = web.TCPSite(runner, host="0.0.0.0", port=APP_PORT)
+        site = web.TCPSite(runner, host="0.0.0.0", port=self._api_port)
         await site.start()
         self._runner = runner
         self._site = site
-        self._log.info("REST API listening on port %d", APP_PORT)
+        self._log.info("REST API listening on port %d", self._api_port)
 
     async def stop(self) -> None:
         if self._site:
@@ -421,8 +424,19 @@ class SchedulerApplication:
         self._evcc = EvccClient(config.evcc_url, self._session, self._log)
         self._evopt = EvoptClient(config.evopt_url, self._session, self._log)
         self._builder = PayloadBuilder(config, self._log)
-        self._rest = RestServer(self._state, self._log)
+        self._rest = RestServer(self._state, self._log, config.api_port)
         self._tasks: List[asyncio.Task] = []
+
+    def _log_json_debug(self, title: str, data: Any) -> None:
+        if not self._log.isEnabledFor(logging.DEBUG):
+            return
+        try:
+            serialized = json.dumps(data, ensure_ascii=False, default=str)
+        except TypeError:
+            serialized = str(data)
+        if len(serialized) > 5000:
+            serialized = f"{serialized[:5000]}... (truncated)"
+        self._log.debug("%s: %s", title, serialized)
 
     def _setup_logging(self, level: str) -> None:
         logging.basicConfig(
@@ -453,6 +467,7 @@ class SchedulerApplication:
         while True:
             try:
                 state = await self._evcc.fetch_state()
+                self._log_json_debug("EVCC state", state)
                 self._state.last_evcc_state = state
                 self._state.last_evcc_poll = datetime.now(tz=self._tz)
                 self._state.last_poll_error = None
@@ -475,8 +490,10 @@ class SchedulerApplication:
         try:
             payload = self._builder.build(evcc_state)
             self._state.optimization.payload = payload
+            self._log_json_debug("EVOpt payload", payload)
             self._write_json(payload, SHARE_DIR / "last_request.json")
             response = await self._evopt.optimize(payload)
+            self._log_json_debug("EVOpt response", response)
             self._state.optimization.response = response
             self._write_json(response, SHARE_DIR / "last_response.json")
             self._state.optimization.completed_at = datetime.now(tz=self._tz)

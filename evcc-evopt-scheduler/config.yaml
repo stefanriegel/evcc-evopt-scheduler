@@ -1,5 +1,5 @@
 name: EVCC EVOpt Scheduler
-version: "0.1.10"
+version: "0.1.11"
 slug: evcc_evopt_scheduler
 description: Bridges EVCC forecasts with EVOpt to generate optimized battery schedules.
 url: https://github.com/stefanriegel/evcc-evopt-scheduler
@@ -23,6 +23,7 @@ options:
   evcc_poll_interval_seconds: 15
   scheduler_interval_seconds: 900
   grid_power_limit_w: 11000
+  api_port: 7060
   log_level: INFO
   battery:
     charge_from_grid: true
@@ -40,6 +41,7 @@ schema:
   evcc_poll_interval_seconds: int(5,300)
   scheduler_interval_seconds: int(60,7200)
   grid_power_limit_w: int(0,100000)
+  api_port: int(1024,65535)
   log_level: list(DEBUG|INFO|WARNING|ERROR)
   battery:
     charge_from_grid: bool
