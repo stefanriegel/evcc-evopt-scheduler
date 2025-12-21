@@ -1,5 +1,5 @@
 name: EVCC EVOpt Scheduler
-version: "0.1.6"
+version: "0.1.7"
 slug: evcc_evopt_scheduler
 description: Bridges EVCC forecasts with EVOpt to generate optimized battery schedules.
 url: https://github.com/stefanriegel/evcc-evopt-scheduler

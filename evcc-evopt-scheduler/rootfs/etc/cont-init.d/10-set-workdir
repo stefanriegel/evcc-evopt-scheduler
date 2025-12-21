@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bashio
+# shellcheck shell=bash
+set -euo pipefail
+
+bashio::log.info "Initializing EVCC EVOpt Scheduler"
+
+cd /app || bashio::exit.nok "Application directory missing"
+export PYTHONPATH="/app:${PYTHONPATH:-}"
