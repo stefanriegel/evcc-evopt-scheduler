@@ -18,3 +18,9 @@ RUN chmod a+x /etc/services.d/evcc-evopt-scheduler/run \
 
 WORKDIR /app
 
+# Add labels for Home Assistant add-on identification
+LABEL \
+  io.hass.version="${BUILD_VERSION}" \
+  io.hass.type="addon" \
+  io.hass.arch="${BUILD_ARCH}"
+
