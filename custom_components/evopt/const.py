@@ -13,6 +13,6 @@ STARTUP_MESSAGE = f"""
 -------------------------------------------------------------------
 This is a custom integration!
 If you have any issues with this you need to open an issue here:
-https://github.com/your-username/ha-evopt
+https://github.com/stefanriegel/ha-evopt
 -------------------------------------------------------------------
 """

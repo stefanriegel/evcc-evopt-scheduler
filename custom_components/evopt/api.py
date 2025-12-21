@@ -34,22 +34,36 @@ class EVOptApiClient:
     async def async_get_optimization_status(self) -> Optional[Dict[str, Any]]:
         """Get current optimization status/results."""
         try:
-            # For now, just return health status
-            # In a real implementation, this would fetch the last optimization result
-            # or current system state from EVOPT
+            # Get health status first
             health = await self.async_health_check()
+
+            # For now, return health data with placeholders for optimization data
+            # In a full implementation, this would fetch the last optimization result
+            # or current system state from EVOpt
             return {
                 "status": health.get("status", "unknown"),
                 "message": health.get("message", ""),
+                "health_data": health,
                 "optimization_status": "unknown",  # Would come from actual optimization result
                 "objective_value": None,  # Economic benefit from optimization
                 "battery_count": 0,  # Number of batteries in system
                 "grid_import_total": 0,  # Total grid import
                 "grid_export_total": 0,  # Total grid export
+                "last_update": None,  # Timestamp of last optimization
             }
         except Exception as err:
             _LOGGER.error("Error getting optimization status: %s", err)
-            return None
+            return {
+                "status": "error",
+                "message": f"Connection failed: {err}",
+                "health_data": None,
+                "optimization_status": "error",
+                "objective_value": None,
+                "battery_count": 0,
+                "grid_import_total": 0,
+                "grid_export_total": 0,
+                "last_update": None,
+            }
 
     async def async_optimize_charge_schedule(self, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Request charge schedule optimization."""

@@ -4,13 +4,6 @@
 
 A Home Assistant integration for EVOpt, an EV charging optimization system that provides intelligent charging schedules based on energy prices, solar production, and battery storage.
 
-## Features
-
-- **Real-time Monitoring**: Monitor EVOpt service health and status
-- **Optimization Results**: Access charging optimization data and schedules
-- **Battery Management**: Track battery charging/discharging patterns
-- **Grid Interaction**: Monitor grid import/export and energy flows
-
 ## Requirements
 
 - A running EVOpt instance (https://github.com/andig/evopt)
@@ -21,7 +14,7 @@ A Home Assistant integration for EVOpt, an EV charging optimization system that 
 
 ### Option 1: HACS (Recommended)
 
-1. Add this repository as a custom repository in HACS
+1. Add `https://github.com/stefanriegel/ha-evopt` as a custom repository in HACS
 2. Search for "EVOpt" and install the integration
 3. Restart Home Assistant
 
@@ -39,12 +32,29 @@ A Home Assistant integration for EVOpt, an EV charging optimization system that 
 
 ## Available Sensors
 
-- **EVOpt Status**: Service health and connection status
+- **EVOpt Status**: Service health and connection status (online/offline)
 - **Optimization Status**: Current optimization state (Optimal/Infeasible/etc.)
 - **Objective Value**: Economic benefit from optimization (€)
 - **Battery Count**: Number of batteries in the system
 - **Grid Import Total**: Total energy imported from grid (Wh)
 - **Grid Export Total**: Total energy exported to grid (Wh)
+
+## Troubleshooting
+
+### Sensors Show No Values
+
+If sensors appear without values, check:
+
+1. **EVOpt Service Connection**: Ensure your EVOpt instance is running and accessible at the configured URL
+2. **Network Connectivity**: Verify Home Assistant can reach your EVOpt server
+3. **API Endpoints**: Make sure EVOpt's `/optimize/health` endpoint is responding
+4. **Logs**: Check Home Assistant logs for connection errors
+
+### Status Values
+
+- **Online**: EVOpt service is healthy and responding
+- **Offline**: EVOpt service is not reachable or unhealthy
+- **Unknown**: Unable to determine service status
 
 ## Services
 

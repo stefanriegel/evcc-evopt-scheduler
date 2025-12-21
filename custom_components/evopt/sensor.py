@@ -45,16 +45,24 @@ class EVOptStatusSensor(EVOptEntity, SensorEntity):
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         if self.coordinator.data:
-            return self.coordinator.data.get("status", "unknown")
+            status = self.coordinator.data.get("status", "unknown")
+            if status == "healthy":
+                return "online"
+            elif status == "error":
+                return "offline"
+            else:
+                return status
         return "unknown"
 
     @property
     def extra_state_attributes(self) -> Dict[str, Any]:
         """Return the state attributes."""
         if self.coordinator.data:
+            health_data = self.coordinator.data.get("health", {})
             return {
-                "health_status": self.coordinator.data.get("health", {}).get("status"),
-                "health_message": self.coordinator.data.get("health", {}).get("message"),
+                "health_status": health_data.get("status"),
+                "health_message": health_data.get("message"),
+                "last_update": self.coordinator.data.get("last_update"),
             }
         return {}
 

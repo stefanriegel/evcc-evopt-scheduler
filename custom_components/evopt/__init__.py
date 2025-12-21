@@ -115,18 +115,18 @@ class EVOptDataUpdateCoordinator(DataUpdateCoordinator):
             # Get optimization status from API client
             status_data = await self.client.async_get_optimization_status()
             if status_data is None:
-                status_data = {}
+                raise UpdateFailed("No data received from EVOpt API")
 
-            # For now, return mock data structure until real optimization results are available
-            # In a full implementation, this would fetch actual optimization results
+            # Return the actual data structure
             return {
-                "health": status_data,
+                "health": status_data.get("health_data", {}),
                 "status": status_data.get("status", "unknown"),
                 "optimization_status": status_data.get("optimization_status", "unknown"),
                 "objective_value": status_data.get("objective_value"),
                 "battery_count": status_data.get("battery_count", 0),
                 "grid_import_total": status_data.get("grid_import_total", 0),
                 "grid_export_total": status_data.get("grid_export_total", 0),
+                "last_update": status_data.get("last_update"),
             }
         except Exception as err:
             _LOGGER.warning("Error fetching data from EVOpt: %s", err)

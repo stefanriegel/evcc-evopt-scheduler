@@ -2,13 +2,13 @@
   "domain": "evopt",
   "name": "EVOpt - EV Charging Optimization",
   "codeowners": [
-    "@your-username"
+    "@stefanriegel"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/your-username/ha-evopt",
+  "documentation": "https://github.com/stefanriegel/ha-evopt",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/your-username/ha-evopt/issues",
+  "issue_tracker": "https://github.com/stefanriegel/ha-evopt/issues",
   "requirements": [],
   "services": [
     "run_optimization"
