@@ -10,7 +10,7 @@ RUN apk add --no-cache python3 py3-pip tzdata && \
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
-COPY app /app
+COPY app /app/app
 COPY rootfs/ /
 
 RUN chmod a+x /etc/services.d/evcc-evopt-scheduler/run \
