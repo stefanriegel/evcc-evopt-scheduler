@@ -1,5 +1,5 @@
 name: EVCC EVOpt Scheduler
-version: "0.1.11"
+version: "0.1.12"
 slug: evcc_evopt_scheduler
 description: Bridges EVCC forecasts with EVOpt to generate optimized battery schedules.
 url: https://github.com/stefanriegel/evcc-evopt-scheduler
@@ -24,6 +24,9 @@ options:
   scheduler_interval_seconds: 900
   grid_power_limit_w: 11000
   api_port: 7060
+  ha_api_url: http://supervisor/core/api
+  ha_token: ""
+  ha_verify_ssl: false
   log_level: INFO
   battery:
     charge_from_grid: true
@@ -32,6 +35,7 @@ options:
     max_soc_percent: 95
     max_charge_power_w: 10000
     max_discharge_power_w: 10000
+  batteries: []
 schema:
   evcc_url: str
   evopt_url: str
@@ -42,6 +46,9 @@ schema:
   scheduler_interval_seconds: int(60,7200)
   grid_power_limit_w: int(0,100000)
   api_port: int(1024,65535)
+  ha_api_url: str
+  ha_token: str?
+  ha_verify_ssl: bool
   log_level: list(DEBUG|INFO|WARNING|ERROR)
   battery:
     charge_from_grid: bool
@@ -50,3 +57,12 @@ schema:
     max_soc_percent: int(0,100)
     max_charge_power_w: int(0,100000)
     max_discharge_power_w: int(0,100000)
+  batteries:
+    - name: str
+      strategy: list(grid_balancing|fixed_discharge|fixed_charge)
+      result_index: int?
+      min_soc_percent: int(0,100)?
+      max_soc_percent: int(0,100)?
+      ha_service: str
+      ha_service_data: dict?
+      context: dict?

@@ -11,6 +11,9 @@ from typing import Any, Dict, List, Optional
 
 import aiohttp  # type: ignore
 from aiohttp import web  # type: ignore
+
+from .battery_control import BatteryControlConfig, BatteryController
+from .ha_client import HomeAssistantServiceClient
 from dateutil import parser as date_parser  # type: ignore
 
 try:  # Python 3.9+ standard module
@@ -61,8 +64,12 @@ class AppConfig:
     scheduler_interval_seconds: int
     grid_power_limit_w: float
     api_port: int
+    ha_api_url: str
+    ha_token: Optional[str]
+    ha_verify_ssl: bool
     log_level: str
     battery: BatteryConfig
+    batteries: List[BatteryControlConfig]
 
     @classmethod
     def load(cls, path: Path = CONFIG_PATH) -> "AppConfig":
@@ -81,6 +88,33 @@ class AppConfig:
             ),
         )
 
+        batteries_raw = raw.get("batteries", [])
+        batteries_cfg: List[BatteryControlConfig] = []
+        for idx, entry in enumerate(batteries_raw):
+            if not isinstance(entry, dict):
+                continue
+            strategy = entry.get("strategy", "grid_balancing")
+            result_index = int(entry.get("result_index", idx))
+            min_soc = float(entry.get("min_soc_percent", battery.min_soc_percent))
+            max_soc = float(entry.get("max_soc_percent", battery.max_soc_percent))
+            ha_service = entry.get("ha_service", "")
+            if not ha_service:
+                continue
+            ha_service_data = entry.get("ha_service_data") or {}
+            context = entry.get("context") or {}
+            batteries_cfg.append(
+                BatteryControlConfig(
+                    name=entry.get("name", f"Battery {idx + 1}"),
+                    strategy=strategy,
+                    result_index=result_index,
+                    min_soc_percent=min_soc,
+                    max_soc_percent=max_soc,
+                    ha_service=ha_service,
+                    ha_service_data=ha_service_data,
+                    context=context,
+                )
+            )
+
         return cls(
             evcc_url=raw.get("evcc_url", "http://core-evcc:7070").rstrip("/"),
             evopt_url=raw.get("evopt_url", "http://core-evopt:7050").rstrip("/"),
@@ -91,8 +125,12 @@ class AppConfig:
             scheduler_interval_seconds=int(raw.get("scheduler_interval_seconds", 900)),
             grid_power_limit_w=float(raw.get("grid_power_limit_w", 11000)),
             api_port=int(raw.get("api_port", DEFAULT_API_PORT)),
+            ha_api_url=raw.get("ha_api_url", "http://supervisor/core/api").rstrip("/"),
+            ha_token=raw.get("ha_token"),
+            ha_verify_ssl=bool(raw.get("ha_verify_ssl", False)),
             log_level=raw.get("log_level", "INFO").upper(),
             battery=battery,
+            batteries=batteries_cfg,
         )
 
 
@@ -329,6 +367,7 @@ class RestServer:
         self._runner: Optional[web.AppRunner] = None
         self._site: Optional[web.TCPSite] = None
 
+
     async def start(self) -> None:
         app = web.Application()
         app.add_routes(
@@ -425,7 +464,18 @@ class SchedulerApplication:
         self._evopt = EvoptClient(config.evopt_url, self._session, self._log)
         self._builder = PayloadBuilder(config, self._log)
         self._rest = RestServer(self._state, self._log, config.api_port)
+        self._ha_client: Optional[HomeAssistantServiceClient] = None
+        if config.ha_token:
+            self._ha_client = HomeAssistantServiceClient(
+                self._session,
+                config.ha_api_url,
+                config.ha_token,
+                config.ha_verify_ssl,
+                self._log,
+            )
+        self._battery_controller = BatteryController(config.batteries, self._ha_client, self._log)
         self._tasks: List[asyncio.Task] = []
+
 
     def _log_json_debug(self, title: str, data: Any) -> None:
         if not self._log.isEnabledFor(logging.DEBUG):
@@ -468,6 +518,7 @@ class SchedulerApplication:
             try:
                 state = await self._evcc.fetch_state()
                 self._log_json_debug("EVCC state", state)
+                self._write_json(state, SHARE_DIR / "last_evcc_state.json")
                 self._state.last_evcc_state = state
                 self._state.last_evcc_poll = datetime.now(tz=self._tz)
                 self._state.last_poll_error = None
@@ -496,6 +547,7 @@ class SchedulerApplication:
             self._log_json_debug("EVOpt response", response)
             self._state.optimization.response = response
             self._write_json(response, SHARE_DIR / "last_response.json")
+            await self._battery_controller.apply(response, evcc_state)
             self._state.optimization.completed_at = datetime.now(tz=self._tz)
             self._state.optimization.error = None
             self._log.info("Optimization run completed successfully")
