@@ -13,7 +13,8 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements
 COPY app /app
 COPY rootfs/ /
 
-RUN chmod a+x /etc/services.d/evcc-evopt-scheduler/run
+RUN chmod a+x /etc/services.d/evcc-evopt-scheduler/run \
+    /etc/cont-init.d/10-set-workdir
 
 WORKDIR /app
 
