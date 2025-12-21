@@ -1,103 +1,33 @@
-# Home Assistant Integration: EVOpt - EV Charging Optimization
+# EVCC EVOpt Scheduler
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+This repository contains a Home Assistant add-on named **EVCC EVOpt Scheduler**.
+The add-on polls an EVCC instance for current site metrics and forecast data,
+translates the information into EVOpt's optimization input format, and executes
+regular optimization runs. The latest optimization inputs and results are
+exposed through a lightweight REST API.
 
-A Home Assistant integration for EVOpt, an EV charging optimization system that provides intelligent charging schedules based on energy prices, solar production, and battery storage.
+The repository follows the standard Home Assistant add-on layout:
 
-## Requirements
+```
+evcc-evopt-scheduler/
+├── app/                 # Python sources
+├── config.yaml          # Add-on metadata and option schema
+├── Dockerfile           # Container build recipe
+├── README.md            # Add-on specific documentation
+├── requirements.txt     # Python dependencies
+└── run.sh               # Container entrypoint script
+```
 
-- A running EVOpt instance (https://github.com/andig/evopt)
-- Home Assistant 2024.1.0 or later
-- HACS (for easy installation)
+## Add-on Overview
 
-## Installation
+- **EVCC Polling**: Retrieves `/api/state` from EVCC to obtain live power
+  readings, battery state, and forecast data (grid tariffs, feed-in, solar
+  production).
+- **EVOpt Execution**: Builds an `OptimizationInput` payload using configurable
+  battery constraints and runs the EVOpt REST endpoint on a fixed cadence.
+- **REST API**: Serves status, metrics, and the last optimization
+  request/response for easy integration with Home Assistant sensors or external
+  dashboards.
 
-### Option 1: HACS (Recommended)
-
-1. Add `https://github.com/stefanriegel/ha-evopt` as a custom repository in HACS
-2. Search for "EVOpt" and install the integration
-3. Restart Home Assistant
-
-### Option 2: Manual Installation
-
-1. Copy the `custom_components/evopt` folder to your Home Assistant `custom_components` directory
-2. Restart Home Assistant
-
-## Configuration
-
-1. Go to **Settings** → **Devices & Services** → **Add Integration**
-2. Search for "EVOpt" and select it
-3. Enter your EVOpt server URL (e.g., `http://your-evopt-server:7050`)
-4. Complete the setup
-
-## Available Sensors
-
-- **EVOpt Status**: Service health and connection status (online/offline)
-- **Optimization Status**: Current optimization state (Optimal/Infeasible/etc.)
-- **Objective Value**: Economic benefit from optimization (€)
-- **Battery Count**: Number of batteries in the system
-- **Grid Import Total**: Total energy imported from grid (Wh)
-- **Grid Export Total**: Total energy exported to grid (Wh)
-
-## Troubleshooting
-
-### Sensors Show No Values
-
-If sensors appear without values, check:
-
-1. **EVOpt Service Connection**: Ensure your EVOpt instance is running and accessible at the configured URL
-2. **Network Connectivity**: Verify Home Assistant can reach your EVOpt server
-3. **API Endpoints**: Make sure EVOpt's `/optimize/health` endpoint is responding
-4. **Logs**: Check Home Assistant logs for connection errors
-
-### Status Values
-
-- **Online**: EVOpt service is healthy and responding
-- **Offline**: EVOpt service is not reachable or unhealthy
-- **Unknown**: Unable to determine service status
-
-## Services
-
-### Run Optimization
-
-You can manually trigger an optimization using the `evopt.run_optimization` service. This allows you to provide custom parameters for the optimization.
-
-**Service Parameters:**
-- `batteries`: Array of battery configurations
-- `time_series`: Time series data (dt, gt, ft, p_N, p_E)
-- `strategy`: Optimization strategy preferences
-- `grid`: Grid configuration (p_max_imp, p_max_exp, prc_p_imp_exc)
-- `eta_c`: Charging efficiency (default: 0.95)
-- `eta_d`: Discharging efficiency (default: 0.95)
-
-## API Integration
-
-This integration communicates with EVOpt's REST API endpoints:
-
-- `/optimize/health` - Service health check
-- `/optimize/charge-schedule` - Charging optimization requests
-
-The integration supports the full EVOpt API specification including:
-- Battery configurations with charging/discharging constraints
-- Time series data for energy forecasts and grid prices
-- Optimization strategies and grid power limits
-- Detailed optimization results with power flows and state of charge data
-
-## API Integration
-
-This integration communicates with EVOpt's REST API endpoints:
-
-- `/optimize/health` - Service health check
-- `/optimize/charge-schedule` - Charging optimization requests
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Issues
-
-If you encounter any issues, please report them on the [GitHub Issues](https://github.com/your-username/ha-evopt/issues) page.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Refer to `evcc-evopt-scheduler/README.md` for installation instructions,
+configuration details, and the API surface provided by the add-on.

@@ -1,0 +1,50 @@
+name: EVCC EVOpt Scheduler
+version: "0.1.0"
+slug: evcc_evopt_scheduler
+description: Bridges EVCC forecasts with EVOpt to generate optimized battery schedules.
+url: https://github.com/stefanriegel/evcc-evopt-scheduler
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+startup: services
+boot: auto
+init: false
+map:
+  - share:rw
+options:
+  evcc_url: http://core-evcc:7070
+  evopt_url: http://core-evopt:7050
+  time_zone: Europe/Berlin
+  time_frame_seconds: 900
+  optimization_horizon_hours: 48
+  evcc_poll_interval_seconds: 15
+  scheduler_interval_seconds: 900
+  grid_power_limit_w: 11000
+  log_level: INFO
+  battery:
+    charge_from_grid: true
+    discharge_to_grid: true
+    min_soc_percent: 5
+    max_soc_percent: 95
+    max_charge_power_w: 10000
+    max_discharge_power_w: 10000
+schema:
+  evcc_url: str
+  evopt_url: str
+  time_zone: str?
+  time_frame_seconds: int(300,3600)
+  optimization_horizon_hours: int(1,72)
+  evcc_poll_interval_seconds: int(5,300)
+  scheduler_interval_seconds: int(60,7200)
+  grid_power_limit_w: int(0,100000)
+  log_level: list(DEBUG|INFO|WARNING|ERROR)
+  battery:
+    charge_from_grid: bool
+    discharge_to_grid: bool
+    min_soc_percent: int(0,100)
+    max_soc_percent: int(0,100)
+    max_charge_power_w: int(0,100000)
+    max_discharge_power_w: int(0,100000)

@@ -1,0 +1,4 @@
+name: EVCC EVOpt Scheduler Add-on Repository
+url: https://github.com/stefanriegel/evcc-evopt-scheduler
+description: Home Assistant add-on that bridges EVCC forecasts with EVOpt optimizations.
+maintainer: Stefan Riegel <info@stefanriegel.de>
