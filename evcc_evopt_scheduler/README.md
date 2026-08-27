@@ -76,7 +76,8 @@ Available strategies:
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
-| `/api/status` | GET | High-level health information |
+| `/api/health` | GET | Liveness probe returning the constant payload `{"status": "ok", "service": "evcc-evopt-scheduler"}` |
+| `/api/status` | GET | Last EVCC poll timestamp, poll error, and optimization snapshot |
 | `/api/metrics` | GET | Last EVCC snapshot and scheduler stats |
 | `/api/optimization/request` | GET | Most recent EVOpt payload |
 | `/api/optimization/response` | GET | Most recent EVOpt response |

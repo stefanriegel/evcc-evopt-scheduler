@@ -1,0 +1,8 @@
+{"actor":"flow42","from":null,"reason":"work-item-created","revision":1,"timestamp":"2026-08-27T20:53:02Z","to":"draft-intent"}
+{"actor":"flow42","from":"draft-intent","reason":"intent-complete-awaiting-human-approval","revision":2,"timestamp":"2026-08-27T20:54:34Z","to":"intent-gate"}
+{"actor":"flow42","from":"intent-gate","reason":"intent-approved-by-stefanriegel-via-github-comment-5445110316-digest-a1b4ddc17382df37f0d0899467395575633f223e3dcfa78c13468f419ba13815","revision":3,"timestamp":"2026-08-27T20:56:22Z","to":"drafting-spec"}
+{"actor":"flow42","from":"drafting-spec","reason":"spec-complete-awaiting-human-approval-digest-43c7407d994c163bd56895df8fdb86df775b8f72b71f883d828aaafbefa6a45c","revision":4,"timestamp":"2026-08-27T21:00:17Z","to":"spec-gate"}
+{"actor":"flow42","from":"spec-gate","reason":"spec-approved-by-stefanriegel-via-github-comment-5445209413-digest-43c7407d994c163bd56895df8fdb86df775b8f72b71f883d828aaafbefa6a45c","revision":5,"timestamp":"2026-08-27T21:06:24Z","to":"planning"}
+{"actor":"flow42","from":"planning","reason":"executable-vertical-slice-plan-complete-digest-0635c06fa880c0cb3a37e5ec0da1d6190ccf51805d2bde5e633d1158a777705f-medium-risk-no-plan-gate-required","revision":6,"timestamp":"2026-08-27T21:14:01Z","to":"building"}
+{"actor":"flow42","from":"building","reason":"implementation-and-red-green-suite-complete-protected-path-audit-clean-independent-security-review-pending","revision":7,"timestamp":"2026-08-27T21:15:43Z","to":"verifying"}
+{"actor":"flow42","from":"verifying","reason":"verification-passed-independent-security-review-task-task_ae9997d93959-zero-findings-tests-5-of-5-scope-and-approvals-reverified","revision":8,"timestamp":"2026-08-27T21:21:14Z","to":"pr-ready"}
