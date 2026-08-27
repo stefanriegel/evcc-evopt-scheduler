@@ -149,7 +149,8 @@ The add-on exposes a REST API on port `7060` (configurable via `api_port`):
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/status` | GET | Returns `{"status": "ok", "service": "evcc-evopt-scheduler"}` |
+| `/api/health` | GET | Liveness probe returning the constant payload `{"status": "ok", "service": "evcc-evopt-scheduler"}` |
+| `/api/status` | GET | Returns the last EVCC poll timestamp, poll error, and optimization snapshot |
 | `/api/metrics` | GET | Returns last EVCC state and scheduler statistics |
 | `/api/optimization/request` | GET | Returns the last EVOpt request payload |
 | `/api/optimization/response` | GET | Returns the last EVOpt response |
@@ -157,7 +158,7 @@ The add-on exposes a REST API on port `7060` (configurable via `api_port`):
 
 Access the API from Home Assistant using:
 ```
-http://[addon-host]:7060/api/status
+http://[addon-host]:7060/api/health
 ```
 
 ### Logging

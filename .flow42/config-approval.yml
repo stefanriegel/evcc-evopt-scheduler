@@ -1,0 +1,7 @@
+schema_version: 1
+config_hash: "f552cbdb894bb35239a6a3134a6803a8ffb5b4adc4b6bf3e60de33ffe8191793"
+config_approved_by: "stefanriegel"
+config_approved_at: "2026-08-27T20:51:20Z"
+config_provenance_kind: "github-comment"
+config_provenance_ref: "https://github.com/stefanriegel/evcc-evopt-scheduler/issues/1#issuecomment-5445071720"
+config_provenance_verified_at: "2026-08-27T20:51:20Z"

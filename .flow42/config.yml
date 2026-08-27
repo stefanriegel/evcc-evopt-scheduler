@@ -1,0 +1,26 @@
+schema_version: 1
+forge: github
+base_branch: main
+concurrency: 4
+worktree_parent: auto
+commands:
+  format: []
+  lint: [python3, -m, py_compile, evcc_evopt_scheduler/app/__init__.py, evcc_evopt_scheduler/app/battery_control.py, evcc_evopt_scheduler/app/ha_client.py, evcc_evopt_scheduler/app/main.py]
+  typecheck: []
+  test: []
+  build: []
+protected_paths:
+  - evcc_evopt_scheduler/config.yaml
+  - evcc_evopt_scheduler/build.yaml
+  - evcc_evopt_scheduler/Dockerfile
+  - evcc_evopt_scheduler/rootfs/
+  - evcc_evopt_scheduler/app/ha_client.py
+  - evcc_evopt_scheduler/app/battery_control.py
+  - repository.yaml
+mandatory_gates:
+  - intent
+  - spec
+  - high-risk-plan
+  - irreversible-action
+  - merge
+  - deploy

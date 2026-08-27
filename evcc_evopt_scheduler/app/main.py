@@ -368,10 +368,11 @@ class RestServer:
         self._site: Optional[web.TCPSite] = None
 
 
-    async def start(self) -> None:
+    def build_application(self) -> web.Application:
         app = web.Application()
         app.add_routes(
             [
+                web.get("/api/health", self._handle_health),
                 web.get("/api/status", self._handle_status),
                 web.get("/api/metrics", self._handle_metrics),
                 web.get("/api/optimization/request", self._handle_request),
@@ -379,6 +380,10 @@ class RestServer:
                 web.post("/api/optimization/run", self._handle_run_now),
             ]
         )
+        return app
+
+    async def start(self) -> None:
+        app = self.build_application()
         runner = web.AppRunner(app)
         await runner.setup()
         site = web.TCPSite(runner, host="0.0.0.0", port=self._api_port)
@@ -392,6 +397,12 @@ class RestServer:
             await self._site.stop()
         if self._runner:
             await self._runner.cleanup()
+
+    @staticmethod
+    async def _handle_health(request: web.Request) -> web.Response:
+        return web.json_response(
+            {"status": "ok", "service": "evcc-evopt-scheduler"}, status=200
+        )
 
     async def _handle_status(self, request: web.Request) -> web.Response:
         return web.json_response(self._app_state.status_snapshot())
