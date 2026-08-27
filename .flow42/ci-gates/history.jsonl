@@ -1,0 +1,7 @@
+{"actor":"flow42","from":null,"reason":"work-item-created","revision":1,"timestamp":"2026-08-27T21:41:13Z","to":"draft-intent"}
+{"actor":"flow42","from":"draft-intent","reason":"intent-complete-awaiting-human-approval","revision":2,"timestamp":"2026-08-27T21:41:13Z","to":"intent-gate"}
+{"actor":"flow42","from":"intent-gate","reason":"intent-approved-by-stefanriegel-via-github-comment-5445569991-digest-3997c3c53877bd7602489de15c6e24bc03bc8ca77729cb84af985de8155c3381","revision":3,"timestamp":"2026-08-27T21:44:00Z","to":"drafting-spec"}
+{"actor":"flow42","from":"drafting-spec","reason":"spec-complete-awaiting-human-approval-digest-ce3f43cf682d186acdb2ad7914ddcbd38350c5e392d8f344b414255dded30537","revision":4,"timestamp":"2026-08-27T21:47:00Z","to":"spec-gate"}
+{"actor":"flow42","from":"spec-gate","reason":"spec-approved-by-stefanriegel-via-github-comment-5445612927-digest-ce3f43cf682d186acdb2ad7914ddcbd38350c5e392d8f344b414255dded30537","revision":5,"timestamp":"2026-08-27T21:48:35Z","to":"planning"}
+{"actor":"flow42","from":"planning","reason":"executable-single-slice-plan-complete-digest-7183e161e06c8f937e18fcba3c9cb2db6dd45e3c22357c7f55f4d5342f343301-medium-risk-no-plan-gate-required","revision":6,"timestamp":"2026-08-27T21:48:35Z","to":"building"}
+{"actor":"flow42","from":"building","reason":"approved-workflow-implemented-actionlint-and-local-python-3-11-validation-pass-independent-security-review-and-forge-red-green-evidence-pending","revision":7,"timestamp":"2026-08-27T21:50:06Z","to":"verifying"}
