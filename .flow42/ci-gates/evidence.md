@@ -89,9 +89,28 @@ permission widening, both immutable Action SHAs, `persist-credentials: false`, l
 commands, per-PR concurrency, and the unchanged requirements digest above. No independent
 security-review result is claimed yet.
 
+## Independent review and live change-request reconciliation
+
+- At `2026-08-27T22:23:59Z`, independent Orca review task `task_231969fd6920`
+  passed with no blocker. The reviewer independently confirmed five tests,
+  `py_compile`, `actionlint`, YAML parsing, immutable Action pins, least-privilege
+  permissions, and absence of secrets and cache use.
+- Authenticated read-only `gh pr view`, pull-review API, `gh pr checks`, and
+  head check-runs API reads confirmed PR #2 is open and non-draft at current head
+  `17a98ebb85581e0820b54833f6fbeaf002b229fc`. Its sole `Python 3.11` check in
+  workflow `CI` completed successfully (Actions run `33120146155`, job
+  `98684717028`); GitHub PR reviews remain exactly `[]` and the review decision is
+  empty.
+- Revision 8 records the independently verified `verifying → pr-ready` transition.
+  Because the same PR was already open, revision 9 records `pr-ready → ci-running`
+  without any Forge write; `change_request` points to PR #2, `ci_state` is `green`,
+  and the next action is `awaiting-current-review`.
+
 ## Remaining verification gaps
 
-- Required observed red and corrected green pull-request runs do not exist yet; creating
-  them requires later authorized commit/push and Forge writes.
+- The current-head green pull-request run is now independently observable. The earlier
+  requirement for an observed temporary red run remains historical specification debt;
+  no temporary failure was introduced during this read-only reconciliation.
+- GitHub PR reviews are still empty, so review remains pending.
 - No commit, push, pull-request creation/update, merge, deployment, release, publication,
   or other Forge write was performed in this implementation run.
